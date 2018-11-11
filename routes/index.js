@@ -1,8 +1,11 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
 
 const bodyParse = require('body-parser');
 const urlencodedParser = bodyParse.urlencoded({extended : true});
+
+const userdb = require('../db/userdb');
+
 
 
 //  ------------------------ DEV ------------------------
@@ -21,7 +24,25 @@ var logInfo = (req, res, next) => {
   next();
 }
 
+isLogin = (req, res, next) => {
+  if (req.isAuthenticated()) {
+    return next();
+  }
+  res.redirect('/login?fail=true');
+}
+
 //  ------------------------ Variaveis renderização ------------------------
+
+var test = (req, res) => {
+  res.send(req.session);
+  // res.send(req.body);
+}
+
+var test2 = (req, res) => {
+  // res.send(req.session);
+  res.send(req.body);
+}
+
 
 var index = (req, res) => {
   res.render('index', {
@@ -46,41 +67,42 @@ var register = (req, res) => {
 };
 
 var login = (req, res) => {
-  res.render('login', {
-    url      : req.originalUrl,
-    title    : 'Peer2you' + req.originalUrl,
-    username : 'Usuário',
-    email    : 'Email',
-    password : 'Senha',
-    check    : 'Lembre-me',
-    submit   : 'Entrar'
-  });
+  if(req.query.fail){
+    res.render('login', {
+      url      : req.originalUrl,
+      title    : 'Peer2you' + req.originalUrl,
+      username : 'Usuário',
+      email    : 'Email',
+      password : 'Senha',
+      check    : 'Lembre-me',
+      submit   : 'Entrar',
+      message  : 'Usuário e/ou senha incorretos!'
+    });
+  }
+  else{
+    res.render('login', {
+      url      : req.originalUrl,
+      title    : 'Peer2you' + req.originalUrl,
+      username : 'Usuário',
+      email    : 'Email',
+      password : 'Senha',
+      check    : 'Lembre-me',
+      submit   : 'Entrar',
+      message  : null
+    });
+  }
 };
 
-var dashboard = (req, res) => {
-  res.render('dashboard', {
-    url      : req.originalUrl,
-    title    : 'Peer2you' + req.originalUrl,
-    username : req.body.userName,
-    token    : req.body.token,
-  })
-};
+var logout = (req, res) => {
+  req.logout();
+  res.redirect('/login');
+}
 
-var config = (req, res) => {
-  res.render('dashboard', {
-    url      : req.originalUrl,
-    title    : 'Peer2you' + req.originalUrl,
-    username : req.body.userName,
-    token    : req.body.token,
-  })
-};
 
-var wallet = (req, res) => {
-  res.render('dashboard', {
-    url      : req.originalUrl,
-    title    : 'Peer2you' + req.originalUrl,
-    username : req.body.userName,
-    token    : req.body.token,
+var registerPost = (req, res, next) => {
+  userdb.createUser(req.body.InputUserName, req.body.InputPassword, req.body.InputEmail, (err, result) => {
+    if(err) res.redirect('/register?fail=true');
+    res.redirect('/login');
   })
 };
 
@@ -98,17 +120,23 @@ var donePOST = (req, res) => {
 
 //  ------------------------ Router ------------------------
 
-router.get('/', index );
-router.get('/register', register );
-router.get('/login', login );
-router.get('/user/dashboard', dashboard);
-router.get('/user/config', config);
-router.get('/user/wallet', wallet);
+module.exports = function (passport) {
+  router.get('/test', test );
+  router.get('/test2', test2 );
+  router.get('/', index );
+  router.get('/register', register );
+  router.get('/login', login );
+  router.get('/logout', logout );
 
-router.post('/done', urlencodedParser, donePOST );
-router.post('/user/dashboard', dashboard);
-router.post('/user/config', config);
-router.post('/user/wallet', wallet);
 
-//  ------------------------ Export ------------------------
-module.exports = router;
+  router.post('/register', registerPost);
+  router.post('/done', urlencodedParser, donePOST );
+  router.post('/login',
+    passport.authenticate('local', {
+      successRedirect: '/user/dashboard',
+      failureRedirect: '/login?fail=true'
+    })
+  );
+
+  return router;
+};

@@ -28,7 +28,9 @@ block content
   
   div(class= divAtr)
     h1(class='display-4') Login
-    form(action='/done' method='post')
+    -if(message !== null)
+      p= message  
+    form(action='/login' method='post')
       div(class='form-row')
         //-label(for='InputName')= username
         div(class=DivInputFullAtr.class)
