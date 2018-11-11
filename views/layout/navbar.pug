@@ -10,7 +10,7 @@ nav(class=navAttrib.class)
 
   a(
   class='navbar-brand text-warning'
-  href='./'
+  href='/'
   ):  i(
       class='fas fa-draw-polygon fa-2x'
       )
@@ -31,22 +31,44 @@ nav(class=navAttrib.class)
   class='collapse navbar-collapse'
   id='navbarToggler'
   )
-    ul(class='navbar-nav mr-auto mt-2 mt-lg-0')
-      li(class='nav-item')
-        a(class=aAttrib.class href='/login') Register
-      li(class='nav-item')
-        a(class=aAttrib.class href='#') Code
+      if (loggedIn)
+        ul(class='navbar-nav mr-auto mt-2 mt-lg-0')
+          li(class='nav-item')
+            a(class=aAttrib.class href='/user/dashboard')= username
+              i(class="far fa-address-card")
+          li(class='nav-item')
+            a(class=aAttrib.class href='#') Gerar
+        
+        a(
+        class=aAttrib.class
+        href='/user/config'
+        role='button'
+        ) Opções 
+          i(class="fas fa-cogs")
+        
+        a(
+        class=aAttrib.class
+        href='/logout'
+        role='button'
+        ) Logout 
+          i(class="fas fa-sign-out-alt")
+      else
+        ul(class='navbar-nav mr-auto mt-2 mt-lg-0')
+          li(class='nav-item')
+            a(class=aAttrib.class href='/register') Registrar
+          li(class='nav-item')
+            a(class=aAttrib.class href='#') Código
 
-    a(
-    class=aAttrib.class
-    href='/register'
-    role='button'
-    ) Register 
-      span(class="far fa-address-card")
-    
-    a(
-    class=aAttrib.class
-    href='/login'
-    role='button'
-    ) Login 
-      span(class="fas fa-sign-in-alt")
+        a(
+        class=aAttrib.class
+        href='/register'
+        role='button'
+        ) Register 
+          i(class="far fa-address-card")
+        
+        a(
+        class=aAttrib.class
+        href='/login'
+        role='button'
+        ) Login 
+          i(class="fas fa-sign-in-alt")

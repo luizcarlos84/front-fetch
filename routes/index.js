@@ -10,29 +10,6 @@ const userdb = require('../db/userdb');
 
 //  ------------------------ DEV ------------------------
 
-
-var dev = (req, res, next) => {
-  console.log('Request type:', req.method);
-  console.log('Request URL:', req.originalUrl)
-  console.log('ID:', req.params);
-  next();
-}
-
-var logInfo = (req, res, next) => {
-  // Realiza o prompt a cada acesso realizado
-  console.log( colors.green(Date.now()) + ' acessado local '.yellow + colors.green(req.originalUrl) );
-  next();
-}
-
-isLogin = (req, res, next) => {
-  if (req.isAuthenticated()) {
-    return next();
-  }
-  res.redirect('/login?fail=true');
-}
-
-//  ------------------------ Variaveis renderização ------------------------
-
 var test = (req, res) => {
   res.send(req.session);
   // res.send(req.body);
@@ -40,9 +17,26 @@ var test = (req, res) => {
 
 var test2 = (req, res) => {
   // res.send(req.session);
-  res.send(req.body);
+  res.send(req.user);
 }
 
+var test3 = (req, res) => {
+  // res.send(req.session);
+  res.send(res.locals);
+}
+
+//  ------------------------ Variaveis renderização ------------------------
+
+// Verificar se existe login ativo e informa na varivel local
+var loggedIn = (req, res, next) => {
+  res.locals.loggedIn = (req.user) ? true : false;
+  next();
+}
+
+var logout = (req, res) => {
+  req.logout();
+  res.redirect('/');
+}
 
 var index = (req, res) => {
   res.render('index', {
@@ -93,12 +87,6 @@ var login = (req, res) => {
   }
 };
 
-var logout = (req, res) => {
-  req.logout();
-  res.redirect('/login');
-}
-
-
 var registerPost = (req, res, next) => {
   userdb.createUser(req.body.InputUserName, req.body.InputPassword, req.body.InputEmail, (err, result) => {
     if(err) res.redirect('/register?fail=true');
@@ -120,9 +108,11 @@ var donePOST = (req, res) => {
 
 //  ------------------------ Router ------------------------
 
-module.exports = function (passport) {
+module.exports = (passport) => {
+  router.get('*', loggedIn);
   router.get('/test', test );
   router.get('/test2', test2 );
+  router.get('/test3', test3 );
   router.get('/', index );
   router.get('/register', register );
   router.get('/login', login );

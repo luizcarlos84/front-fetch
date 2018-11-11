@@ -5,23 +5,26 @@ block content
 
   //- atributos do container principal
   - var divAtr = {};
-  - divAtr = ['container', 'my-3', 'py-3', 'col-md-8'];
+  - divAtr = ['container', 'my-3', 'py-3', 'col-md-6'];
 
   //- Campo de texto ocupa toda as 12 colunas
-  - var divFormFullAtr = {};
-  - divFormFullAtr.class = ['form-group', 'col-md-12'];
-
+  - var divFormFullfAtr = {};
+  - divFormFullfAtr.class = ['form-group', 'col-md-12'];
+  
   //- Campo de texto ocupa 6 colunas (meia tela)
   - var divFormHalfAtr = {};
   - divFormHalfAtr.class = ['form-group', 'col-md-6'];
 
-  //- Campo input
-  - var DivInputFullAtr = {};
-  - DivInputFullAtr.class = ['input-group'];
-
 
   div(class= divAtr)
-  h1(class='display-4') config
-  p(class='lead')= username
-  p(class='lead')= email
-  p(class='lead')= password
+    h1(class='display-5') Configurações
+    div(class="dropdown-divider")
+      
+    div(class='form-group row')
+     label(for="username" class="col-sm-2 col-form-label") Username
+     div(class="col-sm-10")
+       input(type="text" readonly class="form-control-plaintext" id="username" value=username)
+    div(class='form-group row')
+     label(for="email" class="col-sm-2 col-form-label") Email
+     div(class="col-sm-10")
+       input(type="text" readonly class="form-control-plaintext" id="email" value=email)

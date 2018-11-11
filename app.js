@@ -7,6 +7,23 @@ const logger = require('morgan');
 const session = require('express-session')
 const passport = require('passport');
 
+//  ------------------------ DEV ------------------------
+
+
+var dev = (req, res, next) => {
+  console.log('Request type:', req.method);
+  console.log('Request URL:', req.originalUrl)
+  console.log('ID:', req.params);
+  next();
+}
+
+var logInfo = (req, res, next) => {
+  // Realiza o prompt a cada acesso realizado
+  console.log( colors.green(Date.now()) + ' acessado local '.yellow + colors.green(req.originalUrl) );
+  next();
+}
+// FIM DEV
+
 
 // Express Start
 var app = express();
@@ -58,6 +75,13 @@ app.use('/', indexRouter);
 app.use('/user', userRouter);
 
 // Manter no fim Manipulação de erros - Error Handler
+
+// app.use((req, res, next) => {
+//   res.status(401);
+//
+//   res.redirect('/');
+// });
+
 app.use((req, res, next) => {
   res.status(404);
 
@@ -67,7 +91,7 @@ app.use((req, res, next) => {
 app.use((err, req, res, next) => {
   res.status(500);
 
-  res.render('error/500', {error : err,});
+  res.render('error/500', {error : err});
 });
 
 
