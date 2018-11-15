@@ -4,27 +4,24 @@ extends ../layout/layout.pug
 block content
 
   //- atributos do container principal
-  - var divAtr = {};
-  - divAtr = ['container', 'my-3', 'py-3', 'col-md-6'];
+  - var divAtr = ['container', 'my-3', 'py-3', 'col-md-6'];
 
-  //- Campo de texto ocupa toda as 12 colunas
-  - var divFormFullfAtr = {};
-  - divFormFullfAtr.class = ['form-group', 'col-md-12'];
+  //- Atributos formulario
+  - var divFormRow = ['form-group', 'row'];
   
-  //- Campo de texto ocupa 6 colunas (meia tela)
-  - var divFormHalfAtr = {};
-  - divFormHalfAtr.class = ['form-group', 'col-md-6'];
+  //- Cria uma linha horizontal
+  - var divider = ['dropdown-divider'];
 
 
   div(class= divAtr)
     h1(class='display-5') Configurações
-    div(class="dropdown-divider")
+    div(class= divider)
       
-    div(class='form-group row')
+    div(class= divFormRow)
      label(for="username" class="col-sm-2 col-form-label") Username
      div(class="col-sm-10")
        input(type="text" readonly class="form-control-plaintext" id="username" value=username)
-    div(class='form-group row')
+    div(class= divFormRow)
      label(for="email" class="col-sm-2 col-form-label") Email
      div(class="col-sm-10")
        input(type="text" readonly class="form-control-plaintext" id="email" value=email)

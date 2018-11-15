@@ -34,11 +34,15 @@ nav(class=navAttrib.class)
       if (loggedIn)
         ul(class='navbar-nav mr-auto mt-2 mt-lg-0')
           li(class='nav-item')
-            a(class=aAttrib.class href='/user/dashboard')= username
-              i(class="far fa-address-card")
-          li(class='nav-item')
-            a(class=aAttrib.class href='#') Gerar
+            a(class=aAttrib.class href='/user/createcode') Criar Código
         
+        a.text-capitalize(
+        class=aAttrib.class
+        href='/user/dashboard'
+        role='button'
+        ) #{username} 
+          i(class="far fa-address-card")
+            
         a(
         class=aAttrib.class
         href='/user/config'
@@ -50,7 +54,7 @@ nav(class=navAttrib.class)
         class=aAttrib.class
         href='/logout'
         role='button'
-        ) Logout 
+        ) Sair 
           i(class="fas fa-sign-out-alt")
       else
         ul(class='navbar-nav mr-auto mt-2 mt-lg-0')
@@ -63,12 +67,12 @@ nav(class=navAttrib.class)
         class=aAttrib.class
         href='/register'
         role='button'
-        ) Register 
+        ) Cadastre-se 
           i(class="far fa-address-card")
         
         a(
         class=aAttrib.class
         href='/login'
         role='button'
-        ) Login 
+        ) Entrar 
           i(class="fas fa-sign-in-alt")

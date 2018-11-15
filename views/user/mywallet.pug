@@ -1,0 +1,20 @@
+extends ../layout/layout.pug
+
+
+block content
+
+  //- atributos do container principal
+  - var divAtr = ['container', 'my-3', 'py-3', 'col-md-8'];
+
+
+
+  div(class= divAtr)
+    div.card
+      div.card-header(id="headingOne")
+        h5.mb-0
+          button(class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne")
+            Collapsible= wallet
+
+      div(id="collapseOne" class="collapse show" aria-labelledby="headingOne")
+        .card-body
+          p= wallet

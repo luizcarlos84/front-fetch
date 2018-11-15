@@ -1,12 +1,12 @@
 //- script.pug
 
 //- JavaScript
-- var src = ['/jquery/jquery.js', '/popper/popper.js', '/js/bootstrap.js', '/js/all.js' ]
+- var src = ['/jquery/jquery.js', '/popper/popper.js', '/progressbar/progressbar.js','/js/bootstrap.js', '/js/all.js' ]
 each element in src
   script(src= element)
 
 //- CSS  
--var href = ['/css/bootstrap.css', '/css/all.css', '/css/custom.css']
+- var href = ['/css/bootstrap.css', '/css/all.css', '/css/custom.css', '/css/circle.css']
 each element in href
   link(rel='stylesheet' type='text/css' href= element)
   

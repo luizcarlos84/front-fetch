@@ -4,24 +4,39 @@ extends ../layout/layout.pug
 block content
 
   //- atributos do container principal
-  - var divAtr = {};
-  - divAtr = ['container', 'my-3', 'py-3', 'col-md-8'];
-
-  //- Campo de texto ocupa toda as 12 colunas
-  - var divFormFullAtr = {};
-  - divFormFullAtr.class = ['form-group', 'col-md-12'];
-
-  //- Campo de texto ocupa 6 colunas (meia tela)
-  - var divFormHalfAtr = {};
-  - divFormHalfAtr.class = ['form-group', 'col-md-6'];
-
-  //- Campo input
-  - var DivInputFullAtr = {};
-  - DivInputFullAtr.class = ['input-group'];
-
+  - var divAtr = ['container', 'my-3', 'py-3', 'col-md-8'];
+  
+  - var margem = ['mx-sm-3', 'mb-2']
+  
+  - var divFormFullAtr = ['form-group', 'col-md-6'];
+  
+  
+  //-each val, index in wallets 
 
   div(class= divAtr)
-  h1(class='display-4') Wallets Privado
-  p(class='lead')= username
-  p(class='lead')= email
-  p(class='lead')= password
+    h1 Minhas Carteiras
+    .dropdown-divider
+    div(id="accordion")
+      div.card
+        div.card-header(id="headingOne")
+          h5.mb-0
+            button(class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne")
+              Collapsible Nova
+
+        div(id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordion")
+          .card-body
+            form(action='/user/wallet' method='post')
+              .form-group
+                input(type='text' class='form-control' name='InputWallet' placeholder='Insira uma chave pública válida' id='wallets')
+              button(type='submit' class='btn btn-outline-primary') Enviar
+        
+      div.card
+        div.card-header(id="headingTwo")
+          h5.mb-0
+            button(class="btn btn-link" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo")
+              Collapsible Cadastrada
+
+        div(id="collapseTwo" class="collapse show" aria-labelledby="collapseTwo" data-parent="#accordion")
+          .card-body
+            each carteira, index in wallets.length ? wallets : ['Nenhuma carteira encontrada']
+              p= carteira

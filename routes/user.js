@@ -4,23 +4,10 @@ const router = express.Router();
 const bodyParse = require('body-parser');
 const urlencodedParser = bodyParse.urlencoded({extended : true});
 
-const userdb = require('../db/userdb');
+const control = require('./control');
+
 
 //  ------------------------ Variaveis renderização ------------------------
-
-// Verifica se o usuário realizou login
-isAuth = (req, res, next) => {
-  if(req.user)
-     return next();
-  else
-     res.redirect('/login')
-}
-
-// Verificar se existe login ativo e informa na varivel local
-var loggedIn = (req, res, next) => {
-  res.locals.loggedIn = (req.user) ? true : false;
-  next();
-}
 
 var dashboard = (req, res) => {
   res.render('user/dashboard', {
@@ -48,8 +35,8 @@ var config = (req, res) => {
   })
 };
 
-var wallet = (req, res) => {
-  res.render('user/wallet', {
+var createCode = (req, res) => {
+  res.render('user/createcode', {
     url      : req.originalUrl,
     title    : 'Peer2you' + req.originalUrl,
     username : req.user.username,
@@ -64,10 +51,10 @@ var wallet = (req, res) => {
 
 //  ------------------------ Router ------------------------
 module.exports = function (passport) {
-  router.get('*', loggedIn, isAuth );
+  router.get('*', control.loggedIn, control.isAuth );
   router.get('/dashboard', dashboard);
   router.get('/config', config);
-  router.get('/wallet', wallet);
+  router.get('/createcode', createCode);
 
   return router;
 };

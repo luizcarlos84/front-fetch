@@ -4,11 +4,21 @@ const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const logger = require('morgan');
 
+// Passport and session
 const session = require('express-session')
 const passport = require('passport');
 
-//  ------------------------ DEV ------------------------
+// Stylus
+const expressStylus = require("express-stylus-middleware");
 
+// Variáveis estaticas
+const fontAwesome = '/node_modules/@fortawesome/fontawesome-free';
+const bootstrap = '/node_modules/bootstrap/dist';
+const jQuery = '/node_modules/jquery/dist';
+const popper = '/node_modules/popper.js/dist';
+const progressBar = '/node_modules/progressbar.js/dist';
+
+//  ------------------------ DEV ------------------------
 
 var dev = (req, res, next) => {
   console.log('Request type:', req.method);
@@ -28,18 +38,19 @@ var logInfo = (req, res, next) => {
 // Express Start
 var app = express();
 
-// Variáveis estaticas
-const fontAwesome = '/node_modules/@fortawesome/fontawesome-free';
-const bootstrap = '/node_modules/bootstrap/dist';
-const jQuery = '/node_modules/jquery/dist';
-const popper = '/node_modules/popper.js/dist';
+
 
 // Configuração a localização das views do pug
 app.set('views', './views');
 app.set('view engine', 'pug');
 
 
-// app.use
+//  ------------------------ App use ------------------------
+
+// Stylus
+app.use("/css", expressStylus(__dirname + "/stylus-css"));
+
+// Express
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -49,13 +60,14 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public'))); // arquivos como imagens, js e css customizados
 app.use( '/jquery', express.static(__dirname + jQuery)); // redirect JS jQuery
 app.use( '/popper', express.static(__dirname + popper)); // redirect JS popper
+app.use( '/progressbar', express.static(__dirname + progressBar)); // redirect JS progressbar
 app.use( '/js', express.static(__dirname + bootstrap + '/js')); // redirect bootstrap JS
 app.use( '/js', express.static(__dirname + fontAwesome + '/js')); // redirect JS fontawesome
 app.use( '/css', express.static(__dirname + bootstrap + '/css')); // redirect CSS bootstrap
 app.use( '/css', express.static(__dirname + fontAwesome + '/css')); // redirect CSS fontawesome
 
 
-// passport
+// Passport
 require('./routes/passport')(passport);
 app.use(session({
   secret : '123',//configure um segredo seu aqui
@@ -70,17 +82,15 @@ app.use(passport.session());
 // Router
 var indexRouter = require('./routes/index')(passport);
 var userRouter = require('./routes/user')(passport);
+var walletRouter = require('./routes/wallet')(passport);
+
 
 app.use('/', indexRouter);
 app.use('/user', userRouter);
+app.use('/user/wallet', walletRouter);
+
 
 // Manter no fim Manipulação de erros - Error Handler
-
-// app.use((req, res, next) => {
-//   res.status(401);
-//
-//   res.redirect('/');
-// });
 
 app.use((req, res, next) => {
   res.status(404);

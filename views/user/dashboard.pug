@@ -4,31 +4,36 @@ extends ../layout/layout.pug
 block content
 
   //- atributos do container principal
-  - var divAtr = {};
-  - divAtr = ['container', 'my-3', 'py-3', 'col-md-8'];
-
-  //- Campo de texto ocupa toda as 12 colunas
-  - var divFormFullAtr = {};
-  - divFormFullAtr.class = ['form-group', 'col-md-12'];
-
-  //- Campo de texto ocupa 6 colunas (meia tela)
-  - var divFormHalfAtr = {};
-  - divFormHalfAtr.class = ['form-group', 'col-md-6'];
-
-  //- Campo input
-  - var DivInputFullAtr = {};
-  - DivInputFullAtr.class = ['input-group'];
-
-
+  - var divAtr = ['d-flex', 'justify-content-center', 'my-3', 'py-3'];
+  - var center = ['d-flex', 'justify-content-center'];
+  
+  
   div(class= divAtr)
-    h1(class='display-5') Dashboard
-    div(class="dropdown-divider")
+    .row
+      .col
+        a(href='dashboard')
+          div(class=center)
+            i(class="far fa-user-circle fa-3x")
+          h5.text-center.text-capitalize #{username}
+      .col
+        a(href='wallet')
+          div(class=center)
+            i(class="fas fa-wallet fa-3x")
+          h5.text-center #{wallets.length}
+      .col
+        div(class=center)
+          i(class="fas fa-exchange-alt fa-3x")
+        h5.text-center 0
+      .col
+        div(class=center)
+          i.text-center(class="fab fa-bitcoin fa-3x")
+        h5.text-center 0.00000000
+
+  .dropdown-divider
       
-    div(class='form-group row')
-     label(for="username" class="col-sm-2 col-form-label") Username
-     div(class="col-sm-10")
-       input(type="text" readonly class="form-control-plaintext" id="username" value=username)
-    div(class='form-group row')
-     label(for="email" class="col-sm-2 col-form-label") Email
-     div(class="col-sm-10")
-       input(type="text" readonly class="form-control-plaintext" id="email" value=email)
+  div(class= divAtr)
+    .row
+      div.progress-circle(data-progress=30 data-text='Moderado')
+  
+      
+      

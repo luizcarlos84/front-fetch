@@ -4,9 +4,7 @@ const router = express.Router();
 const bodyParse = require('body-parser');
 const urlencodedParser = bodyParse.urlencoded({extended : true});
 
-const userdb = require('../db/userdb');
-
-
+const control = require('./control');
 
 //  ------------------------ DEV ------------------------
 
@@ -27,12 +25,6 @@ var test3 = (req, res) => {
 
 //  ------------------------ Variaveis renderização ------------------------
 
-// Verificar se existe login ativo e informa na varivel local
-var loggedIn = (req, res, next) => {
-  res.locals.loggedIn = (req.user) ? true : false;
-  next();
-}
-
 var logout = (req, res) => {
   req.logout();
   res.redirect('/');
@@ -40,7 +32,7 @@ var logout = (req, res) => {
 
 var index = (req, res) => {
   res.render('index', {
-    url      : req.originalUrl,
+    url       : req.originalUrl,
     title     : 'Peer2you',
     jumbotron : 'Procurando criptomoedas?',
     subtitle  : 'Conhecemos as pessoas certas! Cuidamos das informações e você do mais importante: seu dinheiro',
@@ -87,14 +79,7 @@ var login = (req, res) => {
   }
 };
 
-var registerPost = (req, res, next) => {
-  userdb.createUser(req.body.InputUserName, req.body.InputPassword, req.body.InputEmail, (err, result) => {
-    if(err) res.redirect('/register?fail=true');
-    res.redirect('/login');
-  })
-};
-
-var donePOST = (req, res) => {
+var done = (req, res) => {
 
   res.render('done', {
     url      : req.originalUrl,
@@ -102,25 +87,27 @@ var donePOST = (req, res) => {
     username : req.body.InputUserName,
     email    : req.body.InputEmail,
     password : req.body.InputPassword,
-    token    : req.body.token,
+    token    : req.body.token
   });
 };
 
 //  ------------------------ Router ------------------------
 
 module.exports = (passport) => {
-  router.get('*', loggedIn);
+  router.get('*', control.loggedIn);
   router.get('/test', test );
   router.get('/test2', test2 );
   router.get('/test3', test3 );
+
+
   router.get('/', index );
   router.get('/register', register );
   router.get('/login', login );
   router.get('/logout', logout );
 
 
-  router.post('/register', registerPost);
-  router.post('/done', urlencodedParser, donePOST );
+  router.post('/register', control.registerPost);
+  router.post('/done', urlencodedParser, done );
   router.post('/login',
     passport.authenticate('local', {
       successRedirect: '/user/dashboard',
