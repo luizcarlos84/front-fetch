@@ -2,6 +2,8 @@ const ObjectId = require('mongodb').ObjectId;
 const bcrypt = require('bcrypt');
 const mongoClient = require('mongodb').MongoClient;
 
+const control = require('../routes/control');
+
 /* ------------------- Database URL ------------------- */
 
 const url = 'mongodb://localhost:27017/';
@@ -30,6 +32,16 @@ const user = (username, passwd, email) => {
   }
 };
 
+const codeGen = (id, code) => {
+  let date = Date.now()
+  return {
+    "ver"      : 1,
+    "user"     : id,
+    "code"     : code,
+    "timestamp": date,
+    "active"   : true
+  }
+}
 
 /* -------------------conexão de dados para usuários------------------- */
 
@@ -39,9 +51,10 @@ const user = (username, passwd, email) => {
  */
 
 connect = (url, base, callback) => {
+
   return mongoClient.connect(url, { useNewUrlParser: true }, (err, client) => {
    if(err)
-     return console.log(err);
+     return console.log('error:',err);
    console.log('Conectado ao banco');
    callback(client);
  });
@@ -49,6 +62,7 @@ connect = (url, base, callback) => {
 
 /* -------------------Consulta de dados para usuários------------------- */
 
+// Encontra o usuaŕio através do username
 findUser = (username, callback) => {
 
   let base = 'users';
@@ -60,6 +74,7 @@ findUser = (username, callback) => {
   })
 }
 
+// Encontra o usuário através do ID
 findUserById = (id, callback) => {
 
   let base = 'users';
@@ -71,6 +86,7 @@ findUserById = (id, callback) => {
   })
 }
 
+// insere um novo usuário no sistema
 insertUser = (username, password, email, callback) => {
 
   // Criptografando senha
@@ -79,13 +95,14 @@ insertUser = (username, password, email, callback) => {
 
   let base = 'users';
   connect(url, base, client => {
-    client.db(base).collection("users").insert( newUser, function(err, result){
-        callback(err, result)
+    client.db(base).collection("users").insert( newUser, function(err, doc){
+        callback(err, doc)
         client.close();
     });
   })
 }
 
+// Insere uma nova carteira ao usuário
 insertWallet = (id, wallet, callback) => {
 
   let base = 'users';
@@ -93,13 +110,14 @@ insertWallet = (id, wallet, callback) => {
     client.db(base).collection("users").updateOne(
       {_id: ObjectId(id) },
       { $push: { wallets: wallet } },
-      function(err, result){
-        callback(err, result)
+      function(err, doc){
+        callback(err, doc)
         client.close();
     });
   })
 }
 
+// Retorna as informações da carteira desde que o usuário seja dono.
 findWalletUser = (id, wallet, callback) => {
 
   let base = 'users';
@@ -118,6 +136,7 @@ findWalletUser = (id, wallet, callback) => {
   })
 }
 
+// Retornar uma carteira não proprietaria
 findWalletAllUser = (id, wallet, callback) => {
 
   let base = 'users';
@@ -133,6 +152,7 @@ findWalletAllUser = (id, wallet, callback) => {
   })
 }
 
+// retorna as informações completa da carteira
 findWalletInfo = (wallet, callback) => {
 
   let base = 'wallet';
@@ -144,6 +164,108 @@ findWalletInfo = (wallet, callback) => {
   })
 }
 
+// Retorna as informações das carteiras para exibição
+findwalletDashboard = (array, callback) => {
+
+  let base = 'wallet';
+  connect(url, base, client => {
+    client.db(base).collection("wallet").find({"_id": {$in: array}}, {
+        projection:{
+          "_id"  : 0,
+          "n_tx" : 1,
+        }
+      }).toArray((err, doc) => {
+        callback(err, doc);
+        client.close();
+    })
+  })
+}
+
+// encontra e retorna um codigo ativo
+findCode= (code, callback) => {
+
+  let base = 'users';
+  connect(url, base, client => {
+    client.db(base).collection("code").findOne({ $and: [{
+          "code"  : code
+        },{
+          "active": true
+        }
+      ]}, {
+        projection:{
+          "_id"   : 0,
+          "code"  : 1,
+          "user"  : 1
+        }
+      }, (err, doc) => {
+        client.db(base).collection("users").findOne({_id: doc.user }, {
+            projection:{
+              "_id"      : 0,
+              "username" : 1,
+              "score"    : 1,
+              "rate_avg" : 1
+            }
+          }, (err, doc) => {
+            callback(err, doc);
+            client.close();
+        })
+    })
+  })
+}
+
+// Lista os códigos gerados aos proprietarios
+findCodeById= (id, callback) => {
+
+  let base = 'users';
+  connect(url, base, client => {
+    client.db(base).collection("code").find({
+      "user": id
+    }, {
+      projection:{
+        "_id"      : 0,
+        "code"     : 1,
+        "timestamp": 1,
+        "active"   : 1
+      }
+    }).toArray((err, doc) => {
+        callback(err, doc);
+        client.close();
+    })
+  })
+}
+
+// Insere o codigo dentro da collection code
+insertCode = (id, callback) => {
+
+  let codeOk = true,
+      code = control.codeGen();
+
+  // do {
+  //   // gera um codigo aletório
+  //   code = control.codeGen()
+  //
+  //   findCode(code, (err, doc) => {
+  //     if(doc == null)
+  //       codeOk = false;
+  //   })
+  //
+  //   // Teste
+  //   console.log('Codigo:', code, 'doc', doc);
+  //
+  // } while (codeOk);
+
+  // instancia de um novo codigo
+  let newCode = codeGen(id, code);
+
+  let base = 'users';
+  connect(url, base, client => {
+    client.db(base).collection("code").insert( newCode, function(err, doc){
+        callback(err, doc)
+        client.close();
+    });
+  })
+}
+
 module.exports.findUser = findUser;
 module.exports.findUserById = findUserById;
 module.exports.insertUser = insertUser
@@ -152,3 +274,8 @@ module.exports.findWalletAllUser = findWalletAllUser;
 module.exports.findWalletUser = findWalletUser;
 module.exports.insertWallet = insertWallet;
 module.exports.findWalletInfo = findWalletInfo;
+module.exports.findwalletDashboard = findwalletDashboard;
+
+module.exports.findCode = findCode;
+module.exports.findCodeById = findCodeById;
+module.exports.insertCode = insertCode;

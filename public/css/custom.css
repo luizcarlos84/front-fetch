@@ -1,7 +1,31 @@
+body > div.container-fluid {
+ min-height: 100vh; /* will cover the 100% of viewport */
+ overflow: hidden;
+ display: block;
+ position: relative;
+ padding-bottom: 10vh; /* height of your footer */
+}
+
+nav, footer {
+  background-image: url(/images/classy-fabric.png);
+}
+
+/* insere objetos dentro do accordion */
+#collapseTwo {
+  overflow: auto;
+}
+
+div.card, div.jumbotron {
+  overflow: auto;
+}
+
+.jumbotron {
+  opacity: 0.9;
+}
+
 .background {
-  /*padding-top: 10px;
-  padding-bottom: 10px;*/
   position: relative;
+  background-size: cover;
 }
 
 .background::before {
@@ -10,14 +34,14 @@
   z-index: -1;
   width: 100%;
   height: 100%;
-  position:absolute;
+  position: absolute;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
   background-size: cover;
-  -webkit-filter: blur(1px) contrast(50%);
-  -moz-filter: blur(1px) contrast(50%);
-  -o-filter: blur(1px) contrast(50%);
-  -ms-filter: blur(1px) contrast(50%);
-  filter: blur(1px) contrast(150%);
+  -webkit-filter: blur(.5px) contrast(30%);
+  -moz-filter: blur(.5px) contrast(30%);
+  -o-filter: blur(.5px) contrast(30%);
+  -ms-filter: blur(.5px) contrast(30%);
+  filter: blur(.5px) contrast(130%);
 }

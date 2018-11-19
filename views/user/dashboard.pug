@@ -1,6 +1,8 @@
 extends ../layout/layout.pug
 
-
+append body
+  body(class='background')
+    
 block content
 
   //- atributos do container principal
@@ -8,7 +10,7 @@ block content
   - var center = ['d-flex', 'justify-content-center'];
   
   
-  div(class= divAtr)
+  .jumbotron
     .row
       .col
         a(href='dashboard')
@@ -23,17 +25,17 @@ block content
       .col
         div(class=center)
           i(class="fas fa-exchange-alt fa-3x")
-        h5.text-center 0
+        h5.text-center #{exchange}
       .col
         div(class=center)
           i.text-center(class="fab fa-bitcoin fa-3x")
         h5.text-center 0.00000000
 
-  .dropdown-divider
-      
-  div(class= divAtr)
-    .row
-      div.progress-circle(data-progress=30 data-text='Moderado')
+    .dropdown-divider
+        
+
+    .row(class= divAtr)
+      div.progress-circle(data-progress=rate_avg data-text='Analisando')
   
       
       

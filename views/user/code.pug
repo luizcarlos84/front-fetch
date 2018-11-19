@@ -1,0 +1,32 @@
+extends ../layout/layout.pug
+
+append body
+  body(class='background')
+
+block content
+  
+  .jumbotron
+    h2.display-5 Codigos
+    //-p(class='lead')= token
+    form(action='code' method='post')
+      button(class='btn btn-outline-primary btn-block') Novo Código
+    if (code)
+      if (code.length == 0)
+        .dropdown-divider
+        p Nenhuma carteira encontrada
+      else
+        table.table
+          thread
+            tr
+              th(scope="col") Código
+              th(scope="col") Criação
+          tbody
+            each element in code
+              if(element.active)
+                tr.table-success
+                  td= element.code
+                  td= element.timestamp
+              else
+                tr
+                  td= element.code
+                  td= element.timestamp

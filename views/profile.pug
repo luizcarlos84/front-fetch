@@ -1,0 +1,18 @@
+extends ./layout/layout.pug
+
+append body
+  body(class='background')
+
+block content
+
+  .jumbotron
+    .row
+      .col
+        h2.display-5 Perfil Publico
+    .row
+      .col
+        p codigo: #{code}
+        p username: #{username}
+      .col
+        p score: #{score}
+        p rate_avg: #{rate_avg}

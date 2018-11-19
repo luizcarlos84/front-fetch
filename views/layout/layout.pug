@@ -1,6 +1,12 @@
 //- layout.pug
+//- atributos do container principal
+- var divAtr = ['container-fluid', 'py-3', 'col-md-8'];
 
-html(lang="pt-BR")
+
+
+
+
+html(lang='pt-BR')
   head
     include head.pug
     
@@ -8,14 +14,12 @@ html(lang="pt-BR")
       include script.pug
       
   block body
-    
-    block jumbotron
-    
-    block navbar
-      include navbar.pug
-
-    block content
-      
-    block footer
-      include footer.pug
+    .container-fluid
+      block jumbotron
+      block navbar
+        include navbar.pug
+      div(class= divAtr)
+        block content  
+      block footer
+        include footer.pug
       

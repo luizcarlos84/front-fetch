@@ -91,6 +91,38 @@ var done = (req, res) => {
   });
 };
 
+// Funciona como GET corrigir para POST
+var profile = (req, res) => {
+  
+  if(req.method == 'GET') {
+    control.findCode(req, res, (err, doc) => {
+      res.render('profile', {
+        url      : req.originalUrl,
+        title    : 'Peer2you' + req.originalUrl,
+        code     : req.params.inputCode,
+        info     : doc,
+        username : doc.username,
+        score    : doc.score,
+        rate_avg : doc.rate_avg
+      });
+    })
+  }
+  else if(req.method == 'POST') {
+    control.findCode(req, res, (err, doc) => {
+      res.render('profile', {
+        url      : req.originalUrl,
+        title    : 'Peer2you' + req.originalUrl,
+        code     : req.body.InputCode,
+        info     : doc,
+        username : doc.username,
+        score    : doc.score,
+        rate_avg : doc.rate_avg
+      });
+    })
+  }
+
+};
+
 //  ------------------------ Router ------------------------
 
 module.exports = (passport) => {
@@ -102,12 +134,14 @@ module.exports = (passport) => {
 
   router.get('/', index );
   router.get('/register', register );
+  router.get('/profile/:inputCode', profile);
   router.get('/login', login );
   router.get('/logout', logout );
 
 
   router.post('/register', control.registerPost);
   router.post('/done', urlencodedParser, done );
+  router.post('/profile', control.findCode, profile);
   router.post('/login',
     passport.authenticate('local', {
       successRedirect: '/user/dashboard',

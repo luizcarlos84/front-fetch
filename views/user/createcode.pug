@@ -2,15 +2,12 @@ extends ../layout/layout.pug
 
 
 block content
-
-  //- atributos do container principal
-  - var divAtr = ['container', 'my-3', 'py-3', 'col-md-8'];
-
-
-
-  div(class= divAtr)
+  
+  //-Não esta sendo usado
   h1(class='display-4') Gerar Código
   p(class='lead')= token
   p(class='lead')= username
   p(class='lead')= email
   p(class='lead')= password
+  p(class='lead')= code
+  
