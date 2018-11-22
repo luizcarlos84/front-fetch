@@ -8,38 +8,22 @@ block content
   - var margem = ['mx-sm-3', 'mb-2']
   
   - var divFormFullAtr = ['form-group', 'col-md-6'];
+  .jumbotron
+    h2.display-5 Carteiras
+    form(action='/user/wallet' method='post')
+      .form-group
+        input(type='text' class='form-control' name='InputWallet' placeholder='Insira uma carteira' id='wallets')
+      button(type='submit' class='btn btn-outline-primary btn-block') Enviar
   
-  div(id="accordion")
-    div.card
-      div.card-header(id="headingOne")
-        h5.mb-0
-          button(class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne")
-            Collapsible Inserir nova carteira
-
-      div(id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordion")
-        .card-body
-          form(action='/user/wallet' method='post')
-            .form-group
-              input(type='text' class='form-control' name='InputWallet' placeholder='Insira uma chave pública válida' id='wallets')
-            button(type='submit' class='btn btn-outline-primary') Enviar
-      
-      //- div.card
-      //-   div.card-header(id="headingTwo")
-      //-     h5.mb-0
-      //-       button(class="btn btn-link" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo")
-      //-         Collapsible Cadastrada
-
-      //- div(id="collapseTwo" class="collapse show" aria-labelledby="collapseTwo" data-parent="#accordion")
-      //-   .card-body
-      if (wallets.length == 0)
-        p Nenhuma carteira encontrada
-      else
-        table.table
-          thread
+    if (wallets.length == 0)
+      p Nenhuma carteira encontrada
+    else
+      table.table
+        thread
+          tr
+            th(scope="col") Carteiras
+        tbody
+          each carteira, index in wallets
             tr
-              th(scope="col") Carteiras
-          tbody
-            each carteira, index in wallets
-              tr
-                td
-                  a(href='/user/wallet/' + carteira) #{carteira}
+              td
+                a(href='/user/wallet/' + carteira) #{carteira}

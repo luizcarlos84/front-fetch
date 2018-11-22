@@ -43,6 +43,15 @@ const codeGen = (id, code) => {
   }
 }
 
+const pending = (idUser, wallet) => {
+  let date = Date.now()
+  return{
+    "_idUser"  : idUser,
+    "wallet"   : wallet,
+    "timestamp": date
+  }
+}
+
 /* -------------------conexão de dados para usuários------------------- */
 
 
@@ -266,6 +275,18 @@ insertCode = (id, callback) => {
   })
 }
 
+insertPending = ( idUser, wallet) => {
+
+  let pend = pending( idUser, wallet);
+
+  let base = 'wallet';
+  connect(url, base, client => {
+    client.db(base).collection("pending").insertOne( pend, function(err, doc){
+        client.close();
+    });
+  });
+}
+
 module.exports.findUser = findUser;
 module.exports.findUserById = findUserById;
 module.exports.insertUser = insertUser
@@ -279,3 +300,5 @@ module.exports.findwalletDashboard = findwalletDashboard;
 module.exports.findCode = findCode;
 module.exports.findCodeById = findCodeById;
 module.exports.insertCode = insertCode;
+
+module.exports.insertPending = insertPending;

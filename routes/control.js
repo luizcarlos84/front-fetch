@@ -48,6 +48,8 @@ var registerPost = (req, res, next) => {
 // Insere novas carteiras no usuario
 var insertWallet = (req, res, next) => {
 
+  userdb.insertPending(req.user._id, req.body.InputWallet);
+
   userdb.insertWallet(req.user._id, req.body.InputWallet, (err, result) => {
     if(err) res.redirect('wallet?fail=true');
     res.redirect('wallet');
