@@ -4,15 +4,23 @@ append body
   body(class='background')
 
 block content
+  
 
   .jumbotron
     .row
       .col
-        h2.display-5 Perfil Publico
+        h2.display-5 Perfil Público
     .row
       .col
-        p codigo: #{code}
-        p username: #{username}
+        h5 codigo: #{code}
+        h5 username: #{username}
+        h5 score: #{score.toFixed(2)}
+        h5 transações: #{txs.length}
       .col
-        p score: #{score}
-        p rate_avg: #{rate_avg}
+        if (score)
+          if (score > 50)
+            div.progress-circle(data-progress=score.toFixed(0) data-text='Holder')
+          else
+            div.progress-circle(data-progress=score.toFixed(0) data-text='Conservador')
+        else
+          div.progress-circle(data-progress=rate_avg data-text='Analisando')

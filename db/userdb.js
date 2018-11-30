@@ -25,7 +25,10 @@ const user = (username, passwd, email) => {
     "username" : username,
     "email"    : email,
     "passwd"   : passwd,
-    "score"    : 0,
+    "score"    : {
+      "score"     : 0,
+      "timestamp" : 0
+    },
     "wallets"  : [],
     "rate_avg" : 0,
     "rate"     : []
@@ -111,6 +114,33 @@ insertUser = (username, password, email, callback) => {
   })
 }
 
+// Encontra o usuário através do ID e atualiza a senha
+updatePasswd = (id, password, callback) => {
+
+  let cryptPasswd = bcrypt.hashSync(password, 10);
+  let base = 'users';
+  let update = {$set: { "passwd": cryptPasswd }}
+
+  connect(url, base, client => {
+    client.db(base).collection("users").findOneAndUpdate({_id: ObjectId(id) }, update, {}, function(err, doc) {
+        callback(err, doc);
+        client.close();
+    })
+  })
+}
+
+// Encontra o usuário através do ID e atualiza
+updateUser = (id, update) => {
+
+  let base = 'users';
+
+  connect(url, base, client => {
+    client.db(base).collection("users").findOneAndUpdate({_id: ObjectId(id) }, update, {}, function(err, doc) {
+        client.close();
+    })
+  })
+}
+
 // Insere uma nova carteira ao usuário
 insertWallet = (id, wallet, callback) => {
 
@@ -126,6 +156,25 @@ insertWallet = (id, wallet, callback) => {
   })
 }
 
+// Retorno das carteiras para o score
+findWalletScore = (query, callback) => {
+
+  let base = 'wallet';
+  connect(url, base, client => {
+    client.db(base).collection("wallet").find( query, {projection: {
+      _id    : 1,
+      hash160: 1,
+      owner  : 1,
+      balance: 1,
+      score  : 1
+    }}).toArray((err, doc) => {
+      callback(err,doc);
+      client.close();
+    })
+  });
+}
+
+
 // Retorna as informações da carteira desde que o usuário seja dono.
 findWalletUser = (id, wallet, callback) => {
 
@@ -138,6 +187,26 @@ findWalletUser = (id, wallet, callback) => {
       {
         wallets: { $eq: wallet }
       }] },
+      function(err, doc){
+        callback(err, doc);
+        client.close();
+    })
+  })
+}
+
+// Retorna as informações da carteira desde que o usuário seja dono.
+removeWalletUser = (id, wallet, callback) => {
+
+  let base = 'users';
+  connect(url, base, client => {
+    client.db(base).collection("users").findOneAndUpdate(
+      {
+        _id: {$eq : ObjectId(id)}
+      }, {
+        $pullAll: {
+          wallets: [ wallet ]
+        }
+      },
       function(err, doc){
         callback(err, doc);
         client.close();
@@ -180,8 +249,9 @@ findwalletDashboard = (array, callback) => {
   connect(url, base, client => {
     client.db(base).collection("wallet").find({"_id": {$in: array}}, {
         projection:{
-          "_id"  : 0,
-          "n_tx" : 1,
+          "_id"    : 0,
+          "balance": 1,
+          "n_tx"   : 1,
         }
       }).toArray((err, doc) => {
         callback(err, doc);
@@ -211,8 +281,7 @@ findCode= (code, callback) => {
             projection:{
               "_id"      : 0,
               "username" : 1,
-              "score"    : 1,
-              "rate_avg" : 1
+              "score"    : 1
             }
           }, (err, doc) => {
             callback(err, doc);
@@ -287,10 +356,30 @@ insertPending = ( idUser, wallet) => {
   });
 }
 
+var clearScoreHolder = ( id, array) => {
+
+  let update = {
+    $pullAll: {
+      "score.exchange": array
+    } }
+
+  let base = 'users';
+  connect(url, base, client => {
+    client.db(base).collection("users").findOneAndUpdate({_id: ObjectId(id) }, update, {}, function(err, doc) {
+        client.close();
+    })
+  })
+
+}
+
 module.exports.findUser = findUser;
 module.exports.findUserById = findUserById;
 module.exports.insertUser = insertUser
+module.exports.updatePasswd = updatePasswd;
+module.exports.updateUser = updateUser;
 
+module.exports.findWalletScore = findWalletScore;
+module.exports.removeWalletUser = removeWalletUser;
 module.exports.findWalletAllUser = findWalletAllUser;
 module.exports.findWalletUser = findWalletUser;
 module.exports.insertWallet = insertWallet;
@@ -302,3 +391,4 @@ module.exports.findCodeById = findCodeById;
 module.exports.insertCode = insertCode;
 
 module.exports.insertPending = insertPending;
+module.exports.clearScoreHolder = clearScoreHolder;

@@ -93,7 +93,7 @@ var done = (req, res) => {
 
 // Funciona como GET corrigir para POST
 var profile = (req, res) => {
-  
+
   if(req.method == 'GET') {
     control.findCode(req, res, (err, doc) => {
       res.render('profile', {
@@ -102,8 +102,8 @@ var profile = (req, res) => {
         code     : req.params.inputCode,
         info     : doc,
         username : doc.username,
-        score    : doc.score,
-        rate_avg : doc.rate_avg
+        score    : doc.score.score,
+        rate_avg : doc.score.exchange
       });
     })
   }
@@ -115,8 +115,8 @@ var profile = (req, res) => {
         code     : req.body.InputCode,
         info     : doc,
         username : doc.username,
-        score    : doc.score,
-        rate_avg : doc.rate_avg
+        score    : doc.score.score,
+        txs      : doc.score.exchange
       });
     })
   }

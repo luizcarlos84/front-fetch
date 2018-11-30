@@ -45,7 +45,7 @@ module.exports = function (passport) {
   router.get('/', wallet);
   router.get('/:walletId', myWallet)
 
-  router.post('/', control.walletHaveOwn, control.insertWallet, wallet )
+  router.post('/', control.walletHaveOwn, control.insertWallet, wallet);
 
   return router;
 };

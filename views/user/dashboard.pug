@@ -29,13 +29,21 @@ block content
       .col
         div(class=center)
           i.text-center(class="fab fa-bitcoin fa-3x")
-        h5.text-center 0.00000000
+        h5.text-center #{balance}
 
     .dropdown-divider
         
-
+    
     .row(class= divAtr)
-      div.progress-circle(data-progress=rate_avg data-text='Analisando')
+      a(style="display:block" href="dashboard/update")
+        if (score)
+          if (score > 50)
+            div.progress-circle(data-progress=score.toFixed(0) data-text='Holder')
+          else
+            div.progress-circle(data-progress=score.toFixed(0) data-text='Conservador')
+        else
+          div.progress-circle(data-progress=rate_avg data-text='Analisando')
+        
   
       
       

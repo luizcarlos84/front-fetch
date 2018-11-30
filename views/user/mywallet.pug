@@ -1,34 +1,55 @@
 extends ../layout/layout.pug
 
+append body
+  body(class='background')
 
 block content
 
   //- atributos do container principal
   - var divAtr = ['container', 'my-3', 'py-3', 'col-md-8'];
 
-
-
-  
   div.card
     div.card-header(id="headingOne")
-      h5.mb-0
-        p wallet: #{wallet}
-        p hash160: #{hash160}
-        p Transações: #{n_tx}
-        button(class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne")
-          Collapsible Transações
+      
+      form
+        div(class="form-group row")
+          label(for="walletInfo" class="col-sm-2 col-form-label") Wallet
+          div(class="col-sm-10")
+            input(type="text" readonly class="form-control-plaintext" id="walletInfo" value=wallet)
+        div(class="form-group row")
+          label(for="hash160Info" class="col-sm-2 col-form-label") Hash160
+          div(class="col-sm-10")
+            input(type="text" readonly class="form-control-plaintext" id="hash160Info" value=hash160)
+        div(class="form-group row")
+          label(for="n_txInfo" class="col-sm-2 col-form-label") Txs
+          div(class="col-sm-10")
+            input(type="text" readonly class="form-control-plaintext" id="n_txInfo" value=n_tx)
+        div(class="form-group row")
+      button(class="btn btn-outline-primary " data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne")
+        Collapsible Transações
+      
+
+      
 
     div(id="collapseOne" class="collapse" aria-labelledby="headingOne")
       .card-body
-        each exchange, index in txs
-          if(index != 0)
-            .dropdown-divider
-          p #{index + 1}
-          p Timestamp: #{exchange.time}
-          each inputs, index in exchange.inputs
-            p Inputs: #{inputs.addr} Value: #{inputs.value}
-          each out, index in exchange.out
-            p Out: #{out.addr} Value: #{out.value}
-          
-              
+        table.table
+          each exchange, index in txs
+            thead
+              tr
+                th Time:
+                th= new Date(exchange.time * 1000).toDateString()
+            tbody
+              each inputs, index in exchange.inputs
+                tr
+                  th Input:
+                  td #{inputs.addr}
+                  td Value: #{inputs.value}
+              each out, index in exchange.out
+                tr
+                  th Out:
+                  td #{out.addr}
+                  td Value: #{out.value}
+            
+            
             
